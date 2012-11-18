@@ -12,6 +12,11 @@
 
 extern __read_mostly int scheduler_running;
 
+#define SCHED_POLICY_PERFORMANCE	(0x1)
+#define SCHED_POLICY_POWERSAVING	(0x2)
+
+extern int __read_mostly sched_balance_policy;
+
 extern unsigned int max_possible_freq;
 extern unsigned int min_max_freq;
 
