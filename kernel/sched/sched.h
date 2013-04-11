@@ -706,6 +706,16 @@ static inline u64 rq_clock_task(struct rq *rq)
 DECLARE_PER_CPU(struct nr_stats_s, runqueue_stats);
 #endif
 
+static inline u64 rq_clock(struct rq *rq)
+{
+	return rq->clock;
+}
+
+static inline u64 rq_clock_task(struct rq *rq)
+{
+	return rq->clock_task;
+}
+
 #ifdef CONFIG_SMP
 
 #define rcu_dereference_check_sched_domain(p) \
