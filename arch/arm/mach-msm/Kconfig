@@ -1044,10 +1044,6 @@ config MSM_EVENT_TIMER
 		events that require the core to be awake and ready to handle the
 		event.
 
-config MSM_NOPM
-	default y if !PM
-	bool
-
 config MSM_BUS_SCALING
 	bool "Bus scaling driver"
 	default n

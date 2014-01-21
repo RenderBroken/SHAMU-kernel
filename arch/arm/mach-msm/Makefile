@@ -31,7 +31,6 @@ obj-$(CONFIG_MSM_PIL_PRONTO) += pil-pronto.o
 obj-$(CONFIG_MSM_PIL_FEMTO) += pil-q6v5.o pil-msa.o pil-femto-modem.o
 obj-$(CONFIG_MSM_TEST_QMI_CLIENT) += kernel_test_service_v01.o test_qmi_client.o
 obj-y += qdsp6v2/
-obj-$(CONFIG_MSM_NOPM) += no-pm.o
 
 obj-$(CONFIG_MSM_PCIE) += pcie.o pcie_irq.o pcie_phy.o
 
