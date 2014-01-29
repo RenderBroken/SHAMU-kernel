@@ -32,7 +32,6 @@ int scm_set_boot_addr(phys_addr_t addr, unsigned int flags)
 }
 EXPORT_SYMBOL(scm_set_boot_addr);
 
-
 /**
  *	scm_set_boot_addr_mc - Set entry physical address for cpus
  *	@addr:	32bit physical address
