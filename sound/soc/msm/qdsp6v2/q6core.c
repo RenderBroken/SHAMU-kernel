@@ -1,4 +1,4 @@
-/* Copyright (c) 2012-2013, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2012-2014, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -21,7 +21,7 @@
 #include <mach/msm_smd.h>
 #include <linux/qdsp6v2/apr.h>
 #include "q6core.h"
-#include <mach/ocmem.h>
+#include <soc/qcom/ocmem.h>
 
 #define TIMEOUT_MS 1000
 
