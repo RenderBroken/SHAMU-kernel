@@ -909,6 +909,11 @@ static void process_init_reply(struct fuse_conn *fc, struct fuse_req *req)
 				pr_info("FUSE: Stacked io is enabled [%s : %d]!\n",
 					current->comm, current->pid);
 			}
+			if (arg->time_gran && arg->time_gran <= 1000000000)
+				fc->sb->s_time_gran = arg->time_gran;
+			else
+				fc->sb->s_time_gran = 1000000000;
+
 		} else {
 			ra_pages = fc->max_read / PAGE_CACHE_SIZE;
 			fc->no_lock = 1;
