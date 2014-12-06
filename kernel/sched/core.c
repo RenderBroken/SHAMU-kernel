@@ -2679,7 +2679,7 @@ void set_task_cpu(struct task_struct *p, unsigned int new_cpu)
 
 	trace_sched_migrate_task(p, new_cpu, pct_task_load(p));
 
-	note_run_start(p, -1);
+	note_run_start(p, sched_clock());
 
 	if (task_cpu(p) != new_cpu) {
 		struct task_migration_notifier tmn;
@@ -3234,6 +3234,8 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
 	if (src_cpu != cpu) {
 		wake_flags |= WF_MIGRATED;
 		set_task_cpu(p, cpu);
+	} else {
+		note_run_start(p, wallclock);
 	}
 #endif /* CONFIG_SMP */
 
@@ -4819,7 +4821,6 @@ need_resched:
 			prev->state = TASK_RUNNING;
 		} else {
 			deactivate_task(rq, prev, DEQUEUE_SLEEP);
-			note_run_start(prev, -1);
 			prev->on_rq = 0;
 
 			/*
@@ -4850,7 +4851,6 @@ need_resched:
 	update_task_ravg(next, rq, PICK_NEXT_TASK, wallclock, 0);
 	clear_tsk_need_resched(prev);
 	rq->skip_clock_update = 0;
-	note_run_start(next, wallclock);
 
 	BUG_ON(task_cpu(next) != cpu_of(rq));
 
