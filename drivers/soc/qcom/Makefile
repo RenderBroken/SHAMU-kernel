@@ -23,3 +23,5 @@ obj-$(CONFIG_INTELLI_HOTPLUG) += intelli_hotplug.o
 obj-$(CONFIG_BRICKED_HOTPLUG) += bricked_hotplug.o
 
 obj-$(CONFIG_STATE_NOTIFIER)		+= state_notifier.o
+obj-$(CONFIG_MMI_SOC_INFO) += mmi_soc_info.o
+obj-$(CONFIG_MMI_UNIT_INFO) += mmi-unit-info.o
