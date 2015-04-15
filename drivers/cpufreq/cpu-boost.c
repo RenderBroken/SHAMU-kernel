@@ -59,6 +59,7 @@ static unsigned int sync_threshold;
 module_param(sync_threshold, uint, 0644);
 
 static bool input_boost_enabled;
+static bool suspended;
 
 static unsigned int input_boost_ms = 40;
 module_param(input_boost_ms, uint, 0644);
@@ -330,6 +331,9 @@ static int boost_migration_notify(struct notifier_block *nb,
 	unsigned long flags;
 	struct cpu_sync *s = &per_cpu(sync_info, mnd->dest_cpu);
 
+	if (suspended)
+		return NOTIFY_OK;
+
 	if (load_based_syncs && (mnd->load <= migration_load_threshold))
 		return NOTIFY_OK;
 
@@ -389,7 +393,8 @@ static void cpuboost_input_event(struct input_handle *handle,
 	u64 now;
 	unsigned int min_interval;
 
-	if (!input_boost_enabled || work_pending(&input_boost_work))
+	if (suspended || !input_boost_enabled ||
+		work_pending(&input_boost_work))
 		return;
 
 	now = ktime_to_us(ktime_get());
@@ -486,7 +491,7 @@ static int cpuboost_cpu_callback(struct notifier_block *cpu_nb,
 	case CPU_UP_CANCELED:
 		break;
 	case CPU_ONLINE:
-		if (!hotplug_boost || !input_boost_enabled ||
+		if (suspended || !hotplug_boost || !input_boost_enabled ||
 		     work_pending(&input_boost_work))
 			break;
 		pr_debug("Hotplug boost for CPU%d\n", (int)hcpu);
@@ -519,7 +524,11 @@ static int state_notifier_callback(struct notifier_block *this,
 {
 	switch (event) {
 		case STATE_NOTIFIER_ACTIVE:
+			suspended = false;
 			__wakeup_boost();
+			break;
+		case STATE_NOTIFIER_SUSPEND:
+			suspended = true;
 			break;
 		default:
 			break;
