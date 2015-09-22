@@ -28,12 +28,8 @@
 #include <linux/gfp.h>
 #include <linux/oom.h>
 #include <linux/smpboot.h>
-<<<<<<< HEAD:kernel/rcutree_plugin.h
-#include "time/tick-internal.h"
-=======
 #include <linux/tick.h>
 #include "../time/tick-internal.h"
->>>>>>> 0db5996... rcu: Move RCU-related source code to kernel/rcu directory:kernel/rcu/tree_plugin.h
 
 #define RCU_KTHREAD_PRIO 1
 
