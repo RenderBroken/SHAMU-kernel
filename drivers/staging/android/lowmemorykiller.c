@@ -468,10 +468,8 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 	}
 	rcu_read_unlock();
 
-	if (nr_to_scan > 0) {
-		if (mutex_lock_interruptible(&scan_mutex) < 0)
-			return 0;
-	}
+	if (mutex_lock_interruptible(&scan_mutex) < 0)
+		return 0;
 
 	other_free = global_page_state(NR_FREE_PAGES);
 
@@ -497,12 +495,7 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 			break;
 		}
 	}
-	if (nr_to_scan > 0) {
-		ret = adjust_minadj(&min_score_adj);
-		lowmem_print(3, "lowmem_shrink %lu, %x, ofree %d %d, ma %hd\n",
-				nr_to_scan, sc->gfp_mask, other_free,
-				other_file, min_score_adj);
-	}
+	ret = adjust_minadj(&min_score_adj);
 
 	rem = global_page_state(NR_ACTIVE_ANON) +
 		global_page_state(NR_ACTIVE_FILE) +
@@ -512,11 +505,9 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 		lowmem_print(5, "lowmem_shrink %lu, %x, return %d\n",
 			     nr_to_scan, sc->gfp_mask, rem);
 
-		if (nr_to_scan > 0)
-			mutex_unlock(&scan_mutex);
+		mutex_unlock(&scan_mutex);
 
-		if ((min_score_adj == OOM_SCORE_ADJ_MAX + 1) &&
-			(nr_to_scan > 0))
+		if (min_score_adj == OOM_SCORE_ADJ_MAX + 1)
 			trace_almk_shrink(0, ret, other_free, other_file, 0);
 
 		return rem;
