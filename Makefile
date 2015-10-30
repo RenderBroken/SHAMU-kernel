@@ -1,6 +1,6 @@
 VERSION = 3
 PATCHLEVEL = 10
-SUBLEVEL = 40
+SUBLEVEL = 92
 EXTRAVERSION =
 NAME = TOSSUG Baby Fish
 
@@ -242,7 +242,7 @@ CONFIG_SHELL := $(shell if [ -x "$$BASH" ]; then echo $$BASH; \
 
 HOSTCC       = $(CCACHE) gcc
 HOSTCXX      = $(CCACHE) g++
-HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O3 -fomit-frame-pointer -fgcse-las
+HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O3 -fomit-frame-pointer -fgcse-las -std=gnu89
 HOSTCXXFLAGS = -O3 -fgcse-las
 
 # Decide whether to build built-in, modular, or both.
@@ -382,7 +382,7 @@ KBUILD_CFLAGS   := -Wall -DNDEBUG -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-delete-null-pointer-checks \
 		   -mcpu=cortex-a15 -mtune=cortex-a15 -mfpu=neon-vfpv4 -marm \
 		   -ffast-math -fsingle-precision-constant \
-		   -fgcse-lm -fgcse-sm -fsched-spec-load -fforce-addr
+		   -fgcse-lm -fgcse-sm -fsched-spec-load -fforce-addr -std=gnu89
 
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
@@ -623,6 +623,8 @@ ifndef CONFIG_FUNCTION_TRACER
 KBUILD_CFLAGS	+= -fomit-frame-pointer
 endif
 endif
+
+KBUILD_CFLAGS   += $(call cc-option, -fno-var-tracking-assignments)
 
 ifdef CONFIG_DEBUG_INFO
 KBUILD_CFLAGS	+= -g
