@@ -38,7 +38,16 @@
 #include <asm/dma-contiguous.h>
 
 #include "mm.h"
+#ifdef CONFIG_TIMA_RKP_DMA_MVA_TO_SETWAY
 
+#define L1_NWAY 4
+#define L2_NWAY 8
+#define L1_WAY_OFFSET 30
+#define L2_WAY_OFFSET 29
+#define TIMA_L1_SETMASK 0xfc0
+#define TIMA_L2_SETMASK 0x3ff80
+
+#endif/*CONFIG_TIMA_RKP_DMA_MVA_TO_SETWAY*/
 /*
  * The DMA API is built upon the notion of "buffer ownership".  A buffer
  * is either exclusively owned by the CPU (and therefore may be accessed
@@ -335,7 +344,7 @@ static void __dma_free_remap(void *cpu_addr, size_t size, bool no_warn)
 	vunmap(cpu_addr);
 }
 
-#define DEFAULT_DMA_COHERENT_POOL_SIZE	SZ_256K
+#define DEFAULT_DMA_COHERENT_POOL_SIZE	SZ_2M
 
 struct dma_pool {
 	size_t size;
@@ -466,20 +475,11 @@ void __init dma_contiguous_remap(void)
 		map.type = MT_MEMORY_DMA_READY;
 
 		/*
-		 * Clear previous low-memory mapping to ensure that the
-		 * TLB does not see any conflicting entries, then flush
-		 * the TLB of the old entries before creating new mappings.
-		 *
-		 * This ensures that any speculatively loaded TLB entries
-		 * (even though they may be rare) can not cause any problems,
-		 * and ensures that this code is architecturally compliant.
+		 * Clear previous low-memory mapping
 		 */
 		for (addr = __phys_to_virt(start); addr < __phys_to_virt(end);
 		     addr += PMD_SIZE)
 			pmd_clear(pmd_off_k(addr));
-
-		flush_tlb_kernel_range(__phys_to_virt(start),
-				       __phys_to_virt(end));
 
 		iotable_init(&map, 1);
 	}
@@ -679,7 +679,9 @@ static inline pgprot_t __get_dma_pgprot(struct dma_attrs *attrs, pgprot_t prot)
 	/* if non-consistent just pass back what was given */
 	else if (!dma_get_attr(DMA_ATTR_NON_CONSISTENT, attrs))
 		prot = pgprot_dmacoherent(prot);
-
+#ifdef CONFIG_TIMA_RKP
+	 prot = __pgprot_modify(prot, 0, L_PTE_XN);
+#endif
 	return prot;
 }
 
@@ -885,6 +887,82 @@ int arm_dma_get_sgtable(struct device *dev, struct sg_table *sgt,
 	return 0;
 }
 
+#ifdef CONFIG_TIMA_RKP_DMA_MVA_TO_SETWAY
+
+void tima_cache_invalidate_setway(unsigned int reg_c7)
+{
+          __asm__ __volatile__ (
+                        "mov    r0, %0\n"
+                        "mcr	p15, 0, r0, c7, c14, 2\n"
+                        ::"r"(reg_c7):"r0");
+}
+void tima_cache_clean_setway(unsigned int reg_c7)
+{
+        __asm__ __volatile__ (
+                        "mov    r0, %0\n"
+                        "mcr	p15, 0, r0, c7, c10, 2\n"		 
+                        ::"r"(reg_c7):"r0");
+}
+
+void tima_flush_cache_setway_func(unsigned int reg_c7,enum dma_data_direction dir)
+{
+        __asm__ __volatile__ (
+                        "mov    r0, %0\n"
+                        "mov    r1, %1\n"
+                        "teq	r1, #2\n"
+                        "beq	tima_cache_invalidate_setway\n"
+                        "mov    r0, %0\n"
+                        "b	tima_cache_clean_setway\n"
+                        ::"r"(reg_c7),"r"(dir));
+}
+static void tima_cache_isb_dsb(void)
+{
+        __asm__ __volatile__ (
+                        "dsb\n"
+                        "isb\n"
+                        );
+}
+/**
+ *    tima_flush_cache- Flush Nonsecure side caches using set/way mechanism
+ */
+
+static void tima_flush_cache(unsigned int phy_addr,enum dma_data_direction dir)
+{
+        unsigned int l1_set_mask = TIMA_L1_SETMASK;
+        unsigned int l2_set_mask = TIMA_L2_SETMASK;
+        unsigned int way;
+        unsigned int reg_c7;
+        unsigned int addr_offset;
+
+        for (way = 0; way < L1_NWAY; way++) {
+                for (addr_offset=0;addr_offset<l1_set_mask;addr_offset+=0x40) {
+                        reg_c7 = 0x00 | ((phy_addr+addr_offset) & l1_set_mask) | (way << L1_WAY_OFFSET);
+                        tima_flush_cache_setway_func(reg_c7,dir);
+                }
+        }
+
+        for (way = 0; way < L2_NWAY; way++) {
+                for (addr_offset=0;addr_offset<0x1000;addr_offset+=0x80) {
+                        reg_c7 = 0x02 | ((phy_addr+addr_offset) & l2_set_mask) | (way << L2_WAY_OFFSET);
+                        tima_flush_cache_setway_func(reg_c7,dir);
+                }
+        }
+        tima_cache_isb_dsb();
+}
+
+/*
+ *    tima_cache_maint_page- Tima Equivalent of dma_cache_maint_page().
+ *    Here we flush cache based on physical address+set/way mechanism
+ */
+static void tima_cache_maint_page(struct page *page,enum dma_data_direction dir)
+{
+    unsigned long paddr;
+
+    paddr = page_to_phys(page);
+    tima_flush_cache(paddr,dir);
+}
+#endif/*CONFIG_TIMA_RKP_DMA_MVA_TO_SETWAY*/
+
 static void dma_cache_maint_page(struct page *page, unsigned long offset,
 	size_t size, enum dma_data_direction dir,
 	void (*op)(const void *, size_t, int))
@@ -912,9 +990,14 @@ static void dma_cache_maint_page(struct page *page, unsigned long offset,
 				len = PAGE_SIZE - offset;
 
 			if (cache_is_vipt_nonaliasing()) {
+#ifdef CONFIG_TIMA_RKP_DMA_MVA_TO_SETWAY
+                tima_cache_maint_page(page,dir);
+#else
+				/* unmapped pages might still be cached */
 				vaddr = kmap_atomic(page);
 				op(vaddr + offset, len, dir);
 				kunmap_atomic(vaddr);
+#endif/*CONFIG_TIMA_RKP_DMA_MVA_TO_SETWAY*/
 			} else {
 				vaddr = kmap_high_get(page);
 				if (vaddr) {
@@ -1434,18 +1517,11 @@ static int arm_iommu_mmap_attrs(struct device *dev, struct vm_area_struct *vma,
 	unsigned long uaddr = vma->vm_start;
 	unsigned long usize = vma->vm_end - vma->vm_start;
 	struct page **pages = __iommu_get_pages(cpu_addr, attrs);
-	unsigned long nr_pages = PAGE_ALIGN(size) >> PAGE_SHIFT;
-	unsigned long off = vma->vm_pgoff;
 
 	vma->vm_page_prot = __get_dma_pgprot(attrs, vma->vm_page_prot);
 
 	if (!pages)
 		return -ENXIO;
-
-	if (off >= nr_pages || (usize >> PAGE_SHIFT) > nr_pages - off)
-		return -ENXIO;
-
-	pages += off;
 
 	do {
 		int ret = vm_insert_page(vma, uaddr, *pages++);
