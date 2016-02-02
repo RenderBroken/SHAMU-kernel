@@ -221,8 +221,11 @@ static int vmpressure_notifier(struct notifier_block *nb,
 {
 	pressure = action;
 
-	if (!enable_process_reclaim)
+	if (!enable_process_reclaim) {
+		if (process_reclaim_pressure > 0)
+			process_reclaim_pressure = 0;
 		return 0;
+	}
 
 	if (!current_is_kswapd())
 		return 0;
