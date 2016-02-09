@@ -49,6 +49,7 @@ function clean_all {
 		cd $REPACK_DIR
 		rm -rf $MODULES_DIR/*
 		rm -rf $KERNEL
+		rm -rf zImage
 		cd $KERNEL_DIR
 		echo
 		make clean && make mrproper
