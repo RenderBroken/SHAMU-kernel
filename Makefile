@@ -355,8 +355,8 @@ MODFLAGS	= -marm -mtune=cortex-a15 -mcpu=cortex-a15 -mfpu=neon-vfpv4 \
 		  -frename-registers -ftree-loop-linear -ftree-vectorize \
 		  -fmodulo-sched -ffast-math -funsafe-math-optimizations \
 		  -std=gnu89 --param l1-cache-size=16 \
-		  --param l1-cache-line-size=16 --param l2-cache-size=2048
-		  
+		  --param l1-cache-line-size=16 --param l2-cache-size=2048 \
+		  -fopenmp -fsanitize=leak
 CFLAGS_MODULE   = -DMODULE $(MODFLAGS)
 AFLAGS_MODULE   = -DMODULE $(MODFLAGS)
 LDFLAGS_MODULE  =
@@ -391,7 +391,6 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -Wno-format-security \
 		   -fno-delete-null-pointer-checks \
 		   $(MODFLAGS)
-
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
 KBUILD_AFLAGS   := -D__ASSEMBLY__
