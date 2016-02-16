@@ -41,18 +41,6 @@ static int cached_regs[] = {6, 6, 0, 0, 0, 0, -1, -1, -1, -1,
 void snd_hax_cache_write(unsigned int reg, unsigned int value)
 {
 	switch (reg) {
-		case TAIKO_A_RX_HPH_L_GAIN:
-			cached_regs[0] = value;
-			break;
-		case TAIKO_A_RX_HPH_R_GAIN:
-			cached_regs[1] = value;
-			break;
-		case TAIKO_A_RX_HPH_L_STATUS:
-			cached_regs[2] = value;
-			break;
-		case TAIKO_A_RX_HPH_R_STATUS:
-			cached_regs[3] = value;
-			break;
 		case TAIKO_A_CDC_RX1_VOL_CTL_B2_CTL:
 			cached_regs[4] = value;
 			break;
@@ -70,9 +58,6 @@ void snd_hax_cache_write(unsigned int reg, unsigned int value)
 			break;
 		case TAIKO_A_CDC_RX6_VOL_CTL_B2_CTL:
 			cached_regs[9] = value;
-			break;
-		case TAIKO_A_CDC_RX7_VOL_CTL_B2_CTL:
-			cached_regs[10] = value;
 			break;
 		case TAIKO_A_CDC_TX1_VOL_CTL_GAIN:
 			cached_regs[11] = value;
@@ -116,21 +101,6 @@ int snd_hax_cache_read(unsigned int reg)
 	int out = -1;
 
 	switch (reg) {
-#ifndef CONFIG_ARCH_APQ8084
-		/* Headphone PowerAmp Gain */
-		case TAIKO_A_RX_HPH_L_GAIN:
-			out = cached_regs[0];
-			break;
-		case TAIKO_A_RX_HPH_R_GAIN:
-			out = cached_regs[1];
-			break;
-		case TAIKO_A_RX_HPH_L_STATUS:
-			out = cached_regs[2];
-			break;
-		case TAIKO_A_RX_HPH_R_STATUS:
-			out = cached_regs[3];
-			break;
-#endif
 		/* Headphone Digital Gain */
 		case TAIKO_A_CDC_RX1_VOL_CTL_B2_CTL:
 			out = cached_regs[4];
@@ -152,10 +122,6 @@ int snd_hax_cache_read(unsigned int reg)
 			out = cached_regs[9];
 			break;
 #endif
-		/* Speaker Gain */
-		case TAIKO_A_CDC_RX7_VOL_CTL_B2_CTL:
-			out = cached_regs[10];
-			break;
 #ifndef CONFIG_ARCH_APQ8084
 		case TAIKO_A_CDC_TX1_VOL_CTL_GAIN:
 			out = cached_regs[11];
@@ -204,24 +170,18 @@ int snd_hax_reg_access(unsigned int reg)
 	int ret = 1;
 
 	switch (reg) {
-		case TAIKO_A_RX_HPH_L_GAIN:
-		case TAIKO_A_RX_HPH_R_GAIN:
-		case TAIKO_A_RX_HPH_L_STATUS:
-		case TAIKO_A_RX_HPH_R_STATUS:
 		case TAIKO_A_CDC_RX1_VOL_CTL_B2_CTL:
 		case TAIKO_A_CDC_RX2_VOL_CTL_B2_CTL:
 		case TAIKO_A_CDC_RX3_VOL_CTL_B2_CTL:
 		case TAIKO_A_CDC_RX4_VOL_CTL_B2_CTL:
 		case TAIKO_A_CDC_RX5_VOL_CTL_B2_CTL:
 		case TAIKO_A_CDC_RX6_VOL_CTL_B2_CTL:
-		case TAIKO_A_CDC_RX7_VOL_CTL_B2_CTL:
 		case TAIKO_A_CDC_TX1_VOL_CTL_GAIN:
 		case TAIKO_A_CDC_TX2_VOL_CTL_GAIN:
 		case TAIKO_A_CDC_TX3_VOL_CTL_GAIN:
 		case TAIKO_A_CDC_TX4_VOL_CTL_GAIN:
 		case TAIKO_A_CDC_TX5_VOL_CTL_GAIN:
 		case TAIKO_A_CDC_TX6_VOL_CTL_GAIN:
-		case TAIKO_A_CDC_TX7_VOL_CTL_GAIN:
 		case TAIKO_A_CDC_TX8_VOL_CTL_GAIN:
 		case TAIKO_A_CDC_TX9_VOL_CTL_GAIN:
 		case TAIKO_A_CDC_TX10_VOL_CTL_GAIN:
@@ -279,32 +239,6 @@ static ssize_t mic_gain_store(struct kobject *kobj,
 
 }
 
-static ssize_t speaker_gain_show(struct kobject *kobj,
-		struct kobj_attribute *attr, char *buf)
-{
-        return sprintf(buf, "%u %u\n",
-			taiko_read(fauxsound_codec_ptr,
-				TAIKO_A_CDC_RX7_VOL_CTL_B2_CTL),
-			taiko_read(fauxsound_codec_ptr,
-				TAIKO_A_CDC_RX7_VOL_CTL_B2_CTL));
-
-}
-
-static ssize_t speaker_gain_store(struct kobject *kobj,
-		struct kobj_attribute *attr, const char *buf, size_t count)
-{
-	unsigned int lval, rval, chksum;
-
-	sscanf(buf, "%u %u %u", &lval, &rval, &chksum);
-
-	taiko_write(fauxsound_codec_ptr,
-		TAIKO_A_CDC_RX7_VOL_CTL_B2_CTL, lval);
-	taiko_write(fauxsound_codec_ptr,
-		TAIKO_A_CDC_RX7_VOL_CTL_B2_CTL, rval);
-
-	return count;
-}
-
 static ssize_t headphone_gain_show(struct kobject *kobj,
 		struct kobj_attribute *attr, char *buf)
 {
@@ -326,42 +260,6 @@ static ssize_t headphone_gain_store(struct kobject *kobj,
 		TAIKO_A_CDC_RX1_VOL_CTL_B2_CTL, lval);
 	taiko_write(fauxsound_codec_ptr,
 		TAIKO_A_CDC_RX2_VOL_CTL_B2_CTL, rval);
-
-	return count;
-}
-
-static ssize_t headphone_pa_gain_show(struct kobject *kobj,
-		struct kobj_attribute *attr, char *buf)
-{
-	return sprintf(buf, "%u %u\n",
-		taiko_read(fauxsound_codec_ptr, TAIKO_A_RX_HPH_L_GAIN),
-		taiko_read(fauxsound_codec_ptr, TAIKO_A_RX_HPH_R_GAIN));
-}
-
-static ssize_t headphone_pa_gain_store(struct kobject *kobj,
-		struct kobj_attribute *attr, const char *buf, size_t count)
-{
-	unsigned int lval, rval, chksum;
-	unsigned int gain, status;
-	unsigned int out;
-
-	sscanf(buf, "%u %u %u", &lval, &rval, &chksum);
-
-	gain = taiko_read(fauxsound_codec_ptr, TAIKO_A_RX_HPH_L_GAIN);
-	out = (gain & 0xf0) | lval;
-	taiko_write(fauxsound_codec_ptr, TAIKO_A_RX_HPH_L_GAIN, out);
-
-	status = taiko_read(fauxsound_codec_ptr, TAIKO_A_RX_HPH_L_STATUS);
-	out = (status & 0x0f) | (lval << 4);
-	taiko_write(fauxsound_codec_ptr, TAIKO_A_RX_HPH_L_STATUS, out);
-
-	gain = taiko_read(fauxsound_codec_ptr, TAIKO_A_RX_HPH_R_GAIN);
-	out = (gain & 0xf0) | rval;
-	taiko_write(fauxsound_codec_ptr, TAIKO_A_RX_HPH_R_GAIN, out);
-
-	status = taiko_read(fauxsound_codec_ptr, TAIKO_A_RX_HPH_R_STATUS);
-	out = (status & 0x0f) | (rval << 4);
-	taiko_write(fauxsound_codec_ptr, TAIKO_A_RX_HPH_R_STATUS, out);
 
 	return count;
 }
@@ -462,23 +360,11 @@ static struct kobj_attribute mic_gain_attribute =
 		mic_gain_show,
 		mic_gain_store);
 
-static struct kobj_attribute speaker_gain_attribute =
-	__ATTR(gpl_speaker_gain,
-		0666,
-		speaker_gain_show,
-		speaker_gain_store);
-
 static struct kobj_attribute headphone_gain_attribute =
 	__ATTR(gpl_headphone_gain,
 		0666,
 		headphone_gain_show,
 		headphone_gain_store);
-
-static struct kobj_attribute headphone_pa_gain_attribute =
-	__ATTR(gpl_headphone_pa_gain,
-		0666,
-		headphone_pa_gain_show,
-		headphone_pa_gain_store);
 
 static struct kobj_attribute sound_control_locked_attribute =
 	__ATTR(gpl_sound_control_locked,
@@ -500,9 +386,7 @@ static struct attribute *sound_control_attrs[] =
 	{
 		&cam_mic_gain_attribute.attr,
 		&mic_gain_attribute.attr,
-		&speaker_gain_attribute.attr,
 		&headphone_gain_attribute.attr,
-		&headphone_pa_gain_attribute.attr,
 		&sound_control_locked_attribute.attr,
 		&sound_reg_sel_attribute.attr,
 		&sound_reg_read_attribute.attr,
