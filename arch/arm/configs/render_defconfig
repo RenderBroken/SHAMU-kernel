@@ -32,6 +32,7 @@ CONFIG_CPU_FREQ_GOV_SMARTMAX_SHAMU=y
 #### TCP Options ####
 
 #### Schedulers ####
+CONFIG_IOSCHED_FIOPS=y
 
 #### MultiRom Support ####
 CONFIG_KEXEC=y
@@ -619,7 +620,6 @@ CONFIG_ZBOOT_ROM_BSS=0
 # CONFIG_ARM_APPENDED_DTB is not set
 CONFIG_CMDLINE=""
 # CONFIG_XIP_KERNEL is not set
-# CONFIG_KEXEC is not set
 # CONFIG_CRASH_DUMP is not set
 # CONFIG_AUTO_ZRELADDR is not set
 
