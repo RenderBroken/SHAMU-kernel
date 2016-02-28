@@ -1,0 +1,378 @@
+Changelog for Render Kernel for the Nexus 6 (SHAMU)!!!
+
+R1:
+9cd537c (origin/rk-mm, r1-t7) kernel: avoid adding non-thread-group task to LMK rbtree
+5e5494b mm: showmem: make the notifiers atomic
+0ed2a6a mm: Add notifier framework for showing memory
+72defa9 mm: prevent to write out dirty page in CMA by may_writepage
+d12e0c6 vmscan: fix increasing nr_isolated incurred by putback unevictable pages
+6ad2858 mm, vmscan: Do not wait for page writeback for GFP_NOFS allocations
+0d34f1f Don't trigger congestion wait on dirty-but-not-writeout pages
+cfd1da2 mm: vmscan: use proportional scanning during direct reclaim and full scan at DEF_PRIORITY
+4044f44 mm/page-writeback.c: do not count anon pages as dirtyable memory
+7ba925e mm: vmscan: do not scale writeback pages when deciding whether to set ZONE_WRITEBACK
+9af709e mm: vmscan: do not continue scanning if reclaim was aborted for compaction
+cb1257d mm: vmscan: take page buffers dirty and locked state into account
+447af7a mm: vmscan: treat pages marked for immediate reclaim as zone congestion
+8c87bd7 mm: vmscan: move direct reclaim wait_iff_congested into shrink_list
+97c96fe mm: vmscan: set zone flags before blocking
+737ba2e mm: vmscan: stall page reclaim after a list of pages have been processed
+bcc3b5e mm: vmscan: stall page reclaim and writeback pages based on dirty/writepage pages encountered
+9b0f0b9 mm: vmscan: move logic from balance_pgdat() to kswapd_shrink_zone()
+d06fcbb mm: vmscan: check if kswapd should writepage once per pgdat scan
+332e445 mm: vmscan: block kswapd if it is encountering pages under writeback
+c085566 (origin/r1-t7) mm: vmscan: do not allow kswapd to scan at maximum priority
+a99b48d mm: vmscan: decide whether to compact the pgdat based on reclaim progress
+8016897 mm: vmscan: flatten kswapd priority loop
+92246b3 mm: vmscan: obey proportional scanning requirements for kswapd
+e718f0f mm: vmscan: limit the number of pages kswapd reclaims at each priority
+2c3b4d6 mm: vmscan: support equal reclaim for anon and file pages
+3747b66 mm: vmscan: support complete shrinker reclaim
+9d9f7a3 mm: swap: don't delay swap free for fast swap devices
+6508786 mm: vmscan: fix the page state calculation in too_many_isolated
+04180df mm: vmscan: do not count anon pages as reclaimable if swap is small
+ceabc82 mm: vmscan: lock page on swap error in pageout
+263bd79 Defconfig: Enable CONFIG_PROCESS_RECLAIM
+c3bd92f  mm: process_reclaim: Tune and add monitoring sysfs
+e7ca0560 Revert "mm: process_reclaim: fix reclaim skip on low efficiency"
+38b48d6 mm: process_reclaim: Don't use work_pending()
+f7a22ed mm: vmstat: make vmstat_work cpu bound during requeue
+97d8b14 mm: process_reclaim: use unbounded cpu workqueue
+3a00beb mm: process_reclaim: do not iterate over stale task structs
+3c9bbd1f mm: process_reclaim: fix reclaim skip on low efficiency
+7dbab27 mm: process reclaim: vmpressure based process reclaim
+37d7ed9 mm: Support address range reclaim
+b49f5d1 mm: Enhance per process reclaim to consider shared pages
+b2d7b94 mm: Remove shrink_page
+fe4cd5e mm: make shrink_page_list with pages work from multiple zones
+282b9b0 mm: vmscan: have kswapd writeback pages based on dirty pages encountered, not priority
+a63f399 mm: compaction: compact all zones when suspended
+a02d3a8 mm: Per process reclaim
+f829615 mm/vmpressure.c: fix race in vmpressure_work_fn()
+b1152b5 vmpressure: make sure there are no events queued after memcg is offlined
+b2d7173 vmpressure: do not check for pending work to prevent from new work
+e15534c vmpressure: change vmpressure::sr_lock to spinlock
+5706e0b mm: vmpressure: account allocstalls only on higher pressures
+9be51e8 mm: vmpressure: account allocstalls only on higher pressures
+b342af8 mm: vmpressure: scale pressure based on reclaim context
+f101cf4 mm: vmpressure: allow in-kernel clients to subscribe for events
+513d98e mm, oom: ensure memoryless node zonelist always includes zones
+6d5b766 mm, oom: make dump_tasks public
+09b0639 staging: android: lmk: Update mods
+563212f lowmemorykiller: Don't count swap cache pages twice
+45f5efa lowmemorykiller: maintain LMK rbtree with signal->adj_node
+8e3f2e2 Revert "drivers/staging: lmk: Add Anon"
+f0b83f4 lowmemorykiller: avoid false adaptive LMK triggers
+0974f70 drivers/staging: lmk: Add Anon
+1a9f4b93 lowmemorykiller: Check tgid with rcu lock held
+e4cad88 lowmemorykiller: adapt to vmpressure
+876883c drivers:lmk: Fix null pointer issue
+efc31ac drivers:lmk: Fix double delete issue
+ce79d46 staging:android:lmk: read rb tree root with spinlock
+5ba6d4a lowmemorykiller: Do proper NULL checks
+7d4b7b0 lowmemorykiller: set TIF_MEMDIE before send kill sig
+ddb708a lowmemorykiller: implement task's adj rbtree
+3924ef1 lowmemorykiller: skip dying or exiting task
+ad224dd lowmemorykiller: Improve routines
+58b66b9 lowmemorykiller: Run the lowmemory notifier when killing
+b4096429 lowmemorykiller: Dump out slab state information
+95468ae lowmemorykiller: enhance debug information
+b4fef54 wakeup: Add more tunable sources
+2ab61ba drivers: power: Enable sensor_ind wakeup source
+cf86d61 drives: Add tunables to deactivate wakeup sources
+4b5d94f power: battery_current_limit: Remove hotplug control completely
+05ce645 clockchips: Add FEAT_PERCPU clockevent flag
+692340f alarmtimer: add verification for rtc dev in power_on_alarm_init
+3ff792f alarm: init power_on_alarm in alarm_dev_init
+9cd03c4 timekeeping: Move clock sync work to power efficient workqueue
+831ddaa rtc: alarm: set power_on_alarm again when calling alarmtimer_resume
+247aaec alarmtimer: add verification for rtc dev in power_on_alarm_init
+4a2e582 rtc: alarm: Change wake-up source
+ba45d8e rtc: alarm: Fix data handling issue with alarm->type
+7e9a474 alarm: init power_on_alarm in alarm_dev_init
+cc0b1c0 time: Change the return type of clockevents_notify() to integer
+f8dc3d6 clockevents: Move the tick_notify() switch case to clockevents_notify()
+f08d9d4 clockevents: Serialize calls to clockevents_update_freq() in the core
+5dd33eb tick: broadcast: Deny per-cpu clockevents from being broadcast sources
+eb810f24 tick: broadcast: Check broadcast mode on CPU hotplug
+0e48992 tick: Introduce hrtimer based broadcast
+0395f9c sched_clock: Avoid corrupting hrtimer tree during suspend
+0008488 sched_clock: Add support for >32 bit sched_clock
+bb905b2 sched_clock: Use an hrtimer instead of timer
+35201a7 sched_clock: Use seqcount instead of rolling our own
+71cb057 clocksource: Extract max nsec calculation into separate function
+2ab3131 sched_clock: Make ARM's sched_clock generic for all architectures
+42539a7 nohz: Avoid tick's double reprogramming in highres mode
+71630c9 nohz: Fix spurious periodic tick behaviour in low-res dynticks mode
+bdaade4 nohz: Get timekeeping max deferment outside jiffies_lock
+18eadae proc: stat: fix idle time jump
+84f6b7c nohz: Convert a few places to use local per cpu accesses
+182e577 tick: don't update idle time if cpu offline
+9f1fa98 alarmtimer: Fix flags after after upstream merge
+c4237f5 alarmtimer: Fix bug where relative alarm timers were treated as absolute
+8839d27 Defconfig: Enable LZ4 Support
+3d5ae44 lib: lz4: Set ARM_EFFICIENT_UNALIGNED_ACCESS
+1559570 arm: add support for LZ4-compressed kernel
+6b180d6 lz4: add overrun checks to lz4_uncompress_unknownoutputsize()
+6599725 lz4: fix another possible overrun
+7b514d9 lz4: ensure length does not wrap
+45ae310 Apply CFLAGS, -Os to decompress.o to improve decompress performance during boot-up process
+11019b6 lz4: fix compression/decompression signedness mismatch
+e9dd2ad lib/lz4: correct the LZ4 license
+94dab9d crypto: add lz4 Cryptographic API
+d5fd3bc lib: add lz4 compressor module
+7ec4231 lib: add support for LZ4-compressed kernel
+66f718d decompressor: add LZ4 decompressor module
+b86dc1b sched/fair: Implement fast idling of CPUs when the system is partially loaded
+3ebb6e3 Makefile: Fix conflicting flags
+07fb541 Defconfig: # CONFIG_PM_SYNC_BEFORE_SUSPEND is not set
+f24bb3f Defconfig: Enable CONFIG_WQ_POWER_EFFICIENT_DEFAULT
+3b20be1 power: make sync on suspend optional
+efc4880 workqueue: Fix permission for power_efficient workqueue
+9f183ef ASoC: pcm: Use the power efficient workqueue for delayed powerdown
+bf9f3c1 net/neighbour: queue work on power efficient wq
+5a006b0 fbcon: queue work on power efficient wq
+2c272dc PHYLIB: queue work on system_power_efficient_wq
+66ff289 regulator: core: Use the power efficient workqueue for delayed powerdown
+ad7bb8d block: queue work on power efficient wq
+50d98af workqueue: allow work_on_cpu() to be called recursively
+735d43a workqueue: Add system wide power_efficient workqueues
+37bc6a8 workqueues: Introduce new flag WQ_POWER_EFFICIENT for power oriented workqueues
+aba77d6 Defconfig: Enable  CONFIG_QUICK_WAKEUP
+004f450 msm: lpm-levels: add suspend_again handler
+61932f5 power: catch wake-up requests in suspend_again
+5f8cf0f power: quickwakeup: initial driver
+38425bc USB: gadeget: ci13xxx: Fix warning for debug usage
+bbbf3e6 tcp: CDG: fix broken congestion control prototype usage in 3.10
+46bf085 tcp: CDG congestion control compatibiity for Linux 3.10
+70c7c87 tcp: auto corking
+f7cad9f Defconfig: CONFIG_TCP_CONG_CDG
+2301bc9 tcp: cdg: use div_u64()
+559852c tcp: add CDG congestion control
+ba6933c block: zen: set fifo batch to 16 to reduce overload on eMMC and CPU.
+c670a7e apq8084-moto-common.dtsi: Enable charging led and pwm mode
+c4ad51e arm/dt: shamu: Prevent BCL controlling hotplug
+2d6dbdf Defconfig: Enable CONFIG_TCP_CONG_ADVANCED
+59c7961 Defconfig: Enable CONFIG_IOSCHED_ZEN
+50cd8ea block: zen crashing on selection fixup
+726ad43 block: add zen scheduler
+54c7097 mmc: core: With great features come great spam
+840a849 Sound Control: Clean Up
+833e1f5 Defconfig: Enable FIOPS
+01e7454 Defconfig: Enable CONFIG_SIMPLE_GPU_ALGORITHM
+0ca616a msm: camera: suppress excessive logging - boot faster
+613679b disable crc check
+fd0235e bcmdhd: reduce wakelocks
+225d1a7 writeback: Fix occasional slow sync(1)
+3622315 writeback: increase bdi_min_ratio to 5 in light of the latest writeback commit.
+4d552e6 writeback: fix writeback cache thrashing
+51191c6 block: Reserve only one queue tag for sync IO if only 3 tags are available
+783c4c9 readahead: make context readahead more conservative
+fc32798 sync: don't block the flusher thread waiting on IO
+0ecb031 tweak deadline iosched
+00b3f99 block: row: Fix crash when adding a new field in bio struct
+ac882f6 block: row: add magic values.
+a3081cf FIOPS: forward port for use on 3.10 Linux
+6edeedc block: fiops add some trace information
+5e3c683 block: fiops bias sync workload
+56ce271 block: fiops preserve vios key for deep queue depth workload
+327122b block: fiops add ioprio support
+dea104f block: fiops sync/async scale
+636c226 block: fiops read/write request scale
+397c2fd block: fiops ioscheduler core
+7f88eaf gpu voltage reductions
+28f9a78 lower all regulator voltages a small amount
+bc6f494 across the board voltage drop
+b17087a block: Disable add_random
+ad2bd29 netfilter: makefile: no unsafe math optimizations
+0b2534e Makefile: Optimize again!
+5ed687f sched/fair: Optimize find_busiest_queue()
+c9bf24a sched: Remove one division operation in find_busiest_queue()
+7db7305 sched/tg: Remove tg.load_weight
+831168c sched/cfs_rq: Change atomic64_t removed_load to atomic_long_t
+4fb24a2 sched/tg: Use 'unsigned long' for load variable in task group
+e300216 sched: Change cfs_rq load avg to unsigned long
+0e03eb6 sched: Consider runnable load average in move_tasks()
+6ea9f9c sched: Update cpu load after task_tick
+5e97e2b sched: patcking task to per cpu horse power in periodic balance
+dc1ba6c sched: packing task per cpu power in fork/exec/wakeup balance
+f2f0499 sched: only use instant utilization in burst wakeup balance
+6af2171 sched: make sure select_tas_rq_fair get a cpu
+10b8b94 sched: don't do power balance on share cpu power domain
+70a6d33 sched: lazy power balance
+1589e99 sched: power aware load balance
+9629287 sched: add new members of sd_lb_stats
+6051288 sched: no balance for prefer_sibling in power scheduling
+0714f97 sched: pull all tasks from source group
+aed5ff7 sched: add power/performance balance allow flag
+230b089 sched: packing transitory tasks in wakeup power balancing
+42cb91e sched: using avg_idle to detect bursty wakeup
+e65f4bc sched: add sched_burst_threshold_ns as wakeup burst indicator
+ac86751 sched: add power aware scheduling in fork/exec/wake
+6b97162 sched: get rq potential maximum utilization
+200df1a sched: scale_rt_power rename and meaning change
+aae3e02 sched: move sg/sd_lb_stats struct ahead
+57c8969 sched: add new sg/sd_lb_stats fields for incoming fork/exec/wake balancing
+689e74e sched: log the cpu utilization at rq
+906c7d6 sched: add sysfs interface for sched_balance_policy selection
+8189d2f sched: add sched balance policies in kernel
+56e806a sched: set initial value of runnable avg for new forked task
+cf165e7 Revert "sched: Introduce temporary FAIR_GROUP_SCHED dependency for load-tracking"
+30bba22 drv2605: expose vibrator to kernel
+fa9e99b VFP: Optimize
+0d52f97 Defconfig: Update
+9e4b4c8 msm: mdss: kcal: Only apply updates on index 0
+5bf290d msm: mdss: kcal: Use PCC for negative display mode
+21dae22 msm: mdss: KCAL: Send a pp display commit when changes are made
+ccb1f2e msm: mdss: KCAL: Do not read from picture adjustment registers
+9064861 msm: mdss: KCAL: Read values from MDP registers wherever possible
+a4d0c7a msm: mdss: KCAL: Apply default values on boot
+87fa833 msm: mdss: KCAL: Queue changes when panel is powered off
+3ff4720 msm: mdss: KCAL: Remove MODULE_DESCRIPTION
+55c4334 msm: mdss: KCAL: Update according to linux guidelines and checkpatch.pl
+30975ba msm: mdss: Save HBM state across panel off/on
+1a14980 msm: mdss: Add KCAL support for post processing control [v2]
+70ab386 (origin/r1-t1-diff, r1-t1-diff) Defconfig: Initial Setup for Render Kernel
+fed7c1c SmartMAX: Import and setup for N6!
+5352647 PowerSuspend: Fix Compile
+56a8bf3 kernel/power/powersuspend: new PM kernel driver for Android w/o early_suspend v1.7 (faux123/Yank555.lu)
+6285200 kernel/power/powersuspend: new PM kernel driver for Android w/o early_suspend v1.6 (faux123/Yank555.lu)
+7643907 kernel/power/powersuspend: new PM kernel driver for Android w/o early_suspend v1.5 (faux123/Yank555.lu)
+057a737 mdss_debug: Remove unused variable
+6578bbb soc: qcom: limiter: Add toggle to control mpdecision
+7242856 cpufreq: set policy with user_policy data
+f02f8ac cpufreq: Check current frequency in device driver
+30bc1a2 msm: limiter: The necessary evil
+219fc77 cpufreq: Prevent mpdecision changing scaling freq
+4e01824 cpufreq: Fix limiter interfaces
+8c6f5a6 cpufreq: Fix timer/workqueue corruption by protecting reading governor_enabled
+c2ff793 Revert "cpufreq: make the "scaling_cur_freq" sysfs entry pollable"
+46a2e6a cpufreq: Add a notifer chain that governors can use to report information
+ccb9221 cpufreq: Return directly in __cpufreq_get if policy is NULL
+d0ac0fa cpufreq: Protect against hotplug in cpufreq_register_driver()
+add1e83 cpufreq: Use correct locking for cpufreq_cpu_data
+a9cdec1 cpufreq: Add if cpu is online check in show
+351aec1 cpufreq: Disable light-weight init/teardown during suspend/resume
+625de57 arch: convert smp_mb__*()
+bb52a36 arch,arm: Convert smp_mb__*()
+f7b3d2e drivers: state_notifier: Sync with latest from yu
+22cb222 drivers: state_notifier: start driver as subsystem
+8ee8e22 drivers: state_notifier: use singlethread workqueue
+269359d drivers: state_notifier: Use high priority workqueue
+ded91cd drivers: state_notifier: Prevent racy suspend call
+a264257 drivers: state_notifier: Disable FB notifiers by default
+564640e drivers: state_notifier: Export suspend status
+b4e1dc0 drivers: state_notifier: Implement suspend_defer_timer
+3baee60 drivers: state_notifier: Enable using FB notifiers by default
+dc38f84 drivers: state_notifier: Add toggle to use FB notifiers
+7a3c3a5 cpufreq: cpu-boost: Disable boost when suspended
+ad9a1be ARM: msm: shamu: Check for completion status
+f4857a4 msm: Move limiter and hotplug drivers to soc-specific location
+aa7e323 soc: qcom: msm_limiter: Refactor limiter driver
+280e282 soc: qcom: msm_limiter: Bump to version 3.7
+99148f1 msm: limiter: Export tunables to header file
+cdd9b3c msm: msm_limiter: Restore old path for parameters
+96474db msm: Clean-up hotplug drivers
+a563158 msm: intelli_hotplug: Auto calculations for  APQ8084 and ARM64 processors
+416c06d msm: Initialize prev_fb for FB notifier
+b409c8b msm: Prevent multiple calls to same FB notifier
+987dd14 msm: Prevent requeuing if already suspended
+dbf2a40 drivers: Add state notifier driver
+c8ce2c2 msm: Add state notifiers to existing drivers
+9079587 msm: Fix usage of FB notifiers
+d1025be cpufreq: cpu-boost: Use MDSS notifiers
+49e8bf4 msm: Add Bricked Hotplug Driver
+ac6872c msm: Add Intelli Hotplug Driver
+a95f7d8 msm: Add MSM Hotplug driver
+993e2e8 msm: msm_rq_stats: Add hotplug enable toggle
+5b69e32 ion: msm: remove superfluous function argument
+cbf665d msm: msm_bus: Suspected fix for deadlock
+06b947d msm: msm_bus: Prevent BKE swtich from overwriting other fields
+90e3804 msm:rq_stats: Register for Cpufreq policy notification
+fe9bfb7 soc: qcom: rq_stats: Pass correct cpu id to update_average_load function
+eb21200 soc: qcom: rq_stats: remove the redundant iowait check
+d427de9 msm: rq_stats: Calculate load based on current freq limit
+359283c msm: rq_stats: Use cpufreq API to get the current frequency
+7f10d70 msm: Add MSM limiter driver
+3045c03 sched/rt: Add Kconfig option to enable panicking for RT throttling
+4d19bea sched/rt: print RT tasks when RT throttling is activated
+944d5c1 arch: Mass conversion of smp_mb__*()
+01d874b netfilter: nf_conntrack: decrement global counter after object release
+198bebf mnt: Correct permission checks in do_remount
+63e9c36 Build: Tone down Makefile Flags and Adjust Build Script
+b744801 arch: Prepare for smp_mb__{before,after}_atomic()
+f3b7999 sched: Remove get_online_cpus() usage
+1db09c2 sched: Add min_max_freq and rq->max_possible_freq
+d68ee3c sched: window-based load stats improvements
+90bcdc0 sched: Fix inaccurate accounting for real-time task
+c76dee7 sched: Fix reference to stale task_struct in try_to_wake_up()
+04e7d4e Revert "tracing/sched: add load balancer tracepoint"
+2ee89b4 sched: core: rename printk_sched to printk_deferred
+fcd208e printk: rename printk_sched to printk_deferred
+5dbe4a4 sched: Add controls for sched features
+564273c cpufreq: cpu-boost: Several optimizations
+b0825b6 cpufreq: cpu-boost: Use one work to remove input boost for all CPUs
+224e5ad cpufreq: cpu-boost: Support separate input_boost_freq for different CPUs
+fe2dd64 msm: mdss: rate limit log spam
+fd1c274 irq: ratelimit is useless
+25d2850 msm: Use ammended interruptible threads
+ad3fc49 selinux: force permissive
+6a87188 touchscreen: increase wakeup delay
+ae9604c Wake gestures: enable wake gestures (app) support
+5efea8f Wake gestures: suspended type changed to atomic_t
+2cfe03b Wake gestures: prevent touches during phone calls
+55fbe79 wake_gestures: honor user set vibe strength for dt2w
+6e2d7e1 wake_gestures: restore stock behavior (no vib) when using stock dt2w
+f6ae4f7 Wake gestures: adjust sensitivity higher
+db222bd Wake gestures: remove broken phone call trigger
+f37a356 Wake gestures: reduce idle drain
+f9953f3 Wake gestures: disable during phone calls, haptic feedback for stock gesture, fix state name
+aff7622 Wake gestures: add haptic feedback
+a33c271 Wake gestures: set y limit for sweep2sleep
+b6dc3c1 Wake gestures: disable debugging and disable gestures by default
+4b3a1b7 Wake gestures: sweep2wake, sweep2sleep and doubletap2wake
+3ef7f2c msm: thermal: Check temperature only if probed
+19472186 msm: thermal: Optimize locking in thermal frequency  mitigation thread
+a8d9f26 msm: thermal: Limit the emergency mitigation messages
+f53761c msm: thermal: Store temperature of tsens on kernel panic notification
+6248039 thermal: msm: Remove early init from board file
+932f189 msm: thermal: Prevent mitigation if not required
+390d53a Revert "msm: thermal: Keep core_control_mask coincident with boot_cpu_mask"
+a953997 msm: thermal: Add RT priority to kernel hotplug thread
+3be4a4a3 msm: thermal: Proceed thermal late init only if probe is successful
+4126bd4 msm: thermal: Keep core_control_mask coincident with boot_cpu_mask
+991b2c5 msm: thermal: Decouple Gfx phase control monitoring
+ab13139 msm: thermal: Add RT priority to kernel thermal threads
+7af0eca Added fsync on/off support.
+8575832 Option to not reset keys pressed at suspend time
+dc3bff1 arm/dt: 8084: Add more clock frequencies
+f8d139e arm/dt:8084: Disable always-on for pma8084_lvs4
+b6ad1e0 arm/dts: shamu: decrease reddish color at low brightness
+8f14419 msm: mdss: configure quickdraw support for shamu
+ae81e86 power: skip sensor_ind wakeup source activation via sysfs
+a113cf3 power: sysfs node to disable/enable smb135x wakelock
+efc6ecd drv2605: vibe strength control
+346a220 Simple GPU Algorithm: Initial coding for devfreq based Adreno Drivers
+71f6bb0 PM: devfreq: Fix simple_ondemand crashing on startup
+4178d02 ASoC: wcd9320: Add sound control bits
+b396785 Fix Warning: USB Gadget Get rid of warning: drivers/usb/gadget/Kconfig:897:warning: defaults for choice values not supported
+74c9699 msm: Fix high load average from uninterruptible waits
+a3068cf ALSA: usb-audio: add dB range mapping for some devices
+3065425 (frap129-n6/rk-mm) fast charge: initial adaptation for Shamu to work with qcom's quick charge 2.0
+049458d Implement kexec-hardboot
+9c52988 Clock-krait-8974: Lower Min UV to 500 and max to 1270
+9b4ce12 Nexus 6: user voltage control
+c2b116b Makefile: Change to -mfpu=neon-vfpv4 -mfloat-abi=hard)
+357741b Remove tracing (Morfic)
+7bf0716 Linux 3.10.94
+0ba6777 Linux 3.10.93
+5e17f77 [SQUASH] shamu kernel: update to 3.10.92 from Linux kernel stable tree
+6448e26 iscsi-target: Fix use-after-free during TPG session shutdown
+f5a8185 Build: Let the fun begin!!!
+7dedd7f ARM: 8328/1: remove empty preprocessor #else branch
+25585e3 ARM: 8171/1: Use current_stack_pointer for return_address
+e63169d ARM: 8160/1: drop warning about return_address not using unwind tables
+4e0719a ARM: 8158/1: LLVMLinux: use static inline in ARM ftrace.h
+94f0bc2 msm: pm: use -fno-aggressive-loop-optimizations Solving a silly GCC warning with a BUG_ON is terrible practice. QComm needs to fix this upstream, but for now this is the quickest fix.
+4591b6f fix compilation warnings
+7bf4f55 cpufreq: interactive: fix compiling warnings
