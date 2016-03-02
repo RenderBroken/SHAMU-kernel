@@ -20,9 +20,6 @@ extern __read_mostly int scheduler_running;
 
 extern int __read_mostly sched_balance_policy;
 
-extern unsigned int max_possible_freq;
-extern unsigned int min_max_freq;
-
 /*
  * Convert user-nice values [ -20 ... 0 ... 19 ]
  * to static priority [ MAX_RT_PRIO..MAX_PRIO-1 ],
@@ -490,11 +487,7 @@ struct rq {
 	u64 avg_idle;
 #endif
 
-	/*
-	 * max_freq = user or thermal defined maximum
-	 * max_possible_freq = maximum supported by hardware
-	 */
-	unsigned int cur_freq, max_freq, min_freq, max_possible_freq;
+	int cur_freq, max_freq, min_freq;
 	u64 cumulative_runnable_avg;
 
 #ifdef CONFIG_IRQ_TIME_ACCOUNTING
