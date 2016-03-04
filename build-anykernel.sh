@@ -82,7 +82,7 @@ echo "Render Kernel Creation Script:"
 echo -e "${restore}"
 
 echo "Pick Toolchain..."
-select choice in HYPER-arm-eabi-4.9 UBER-4.9-Cortex-a15 UBER-5.2
+select choice in HYPER-arm-eabi-4.9 UBER-4.9-Cortex-a15 UBER-5.3-cortex-a15
 do
 case "$choice" in
 	"HYPER-arm-eabi-4.9")
