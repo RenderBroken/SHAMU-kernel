@@ -27,6 +27,35 @@
 		spi0 = &spi_0;
 	};
 
+	cpus {
+		#size-cells = <0>;
+		#address-cells = <1>;
+
+		CPU0: cpu@0 {
+			device_type = "cpu";
+			compatible = "qcom,krait";
+			reg = <0x0>;
+		};
+
+		CPU1: cpu@1 {
+			device_type = "cpu";
+			compatible = "qcom,krait";
+			reg = <0x1>;
+		};
+
+		CPU2: cpu@2 {
+			device_type = "cpu";
+			compatible = "qcom,krait";
+			reg = <0x2>;
+		};
+
+		CPU3: cpu@3 {
+			device_type = "cpu";
+			compatible = "qcom,krait";
+			reg = <0x3>;
+		};
+	};
+
 	soc: soc { };
 	cpus {
 		#size-cells = <0>;
@@ -303,7 +332,7 @@
 
 		qcom,tx-gpio = <&msmgpio 130 0>;
 		qcom,rx-gpio = <&msmgpio 131 0>;
-		qcom,inject-rx-on-wakeup = <1>;
+		qcom,inject-rx-on-wakeup;
 		qcom,rx-char-to-inject = <0x18>;
 
 		qcom,wakeup_irq = <2>;
@@ -531,7 +560,8 @@
 		interrupt-names = "hc_irq", "pwr_irq";
 
 		qcom,bus-width = <8>;
-		qcom,cpu-dma-latency-us = <200>;
+		qcom,cpu-dma-latency-us = <701>;
+		qcom,wakeup-on-idle;
 
 		qcom,msm-bus,name = "sdhc1";
 		qcom,msm-bus,num-cases = <9>;
@@ -562,6 +592,7 @@
 
 		qcom,bus-width = <4>;
 		qcom,cpu-dma-latency-us = <200>;
+		qcom,wakeup-on-idle;
 
 		qcom,msm-bus,name = "sdcc2";
 		qcom,msm-bus,num-cases = <8>;
@@ -589,6 +620,7 @@
 		interrupt-names = "hc_irq", "pwr_irq";
 
 		qcom,bus-width = <4>;
+		qcom,cpu-dma-latency-us = <701>;
 
 		qcom,msm-bus,name = "sdhc2";
 		qcom,msm-bus,num-cases = <8>;
@@ -789,28 +821,6 @@
 		qcom,bam-pipe-pair = <2>;
 		qcom,ce-hw-instance = <1>;
 		qcom,ce-device = <0>;
-		qcom,clk-mgmt-sus-res;
-                qcom,msm-bus,name = "qcrypto-noc";
-		qcom,msm-bus,num-cases = <2>;
-		qcom,msm-bus,num-paths = <1>;
-		qcom,use-sw-aes-cbc-ecb-ctr-algo;
-		qcom,use-sw-aes-xts-algo;
-		qcom,use-sw-ahash-algo;
-		qcom,msm-bus,vectors-KBps =
-				<56 512 0 0>,
-				<56 512 3936000 393600>;
-	};
-
-	qcom,qcrypto1@fd440000 {
-		status = "disabled";
-		compatible = "qcom,qcrypto";
-		reg = <0xfd440000 0x20000>,
-		      <0xfd444000 0x1b000>;
-		reg-names = "crypto-base","crypto-bam-base";
-		interrupts = <0 236 0>;
-		qcom,bam-pipe-pair = <0>;
-		qcom,ce-hw-instance = <1>;
-		qcom,ce-device = <1>;
 		qcom,clk-mgmt-sus-res;
                 qcom,msm-bus,name = "qcrypto-noc";
 		qcom,msm-bus,num-cases = <2>;
@@ -1030,7 +1040,7 @@
 		qcom,noise-rjct-scl = <1>;
 		qcom,noise-rjct-sda = <1>;
 		qcom,i2c-bus-freq = <400000>;
-		qcom,i2c-src-freq = <50000000>;
+		qcom,i2c-src-freq = <19200000>;
 		qcom,sda-gpio = <&msmgpio 10 0>;
 		qcom,scl-gpio = <&msmgpio 11 0>;
 		qcom,master-id = <86>;
@@ -1086,10 +1096,11 @@
 		qcom,noise-rjct-scl = <0>;
 		qcom,noise-rjct-sda = <0>;
 		qcom,i2c-bus-freq = <400000>;
-		qcom,i2c-src-freq = <50000000>;
+		qcom,i2c-src-freq = <19200000>;
 		qcom,sda-gpio = <&msmgpio 61 0>;
 		qcom,scl-gpio = <&msmgpio 62 0>;
 		qcom,master-id = <84>;
+		qcom,extended-recovery = <1>;
 	};
 
 	qcom,clock-krait@f9016000 {
@@ -4880,6 +4891,7 @@
 				<55 512 0 0>,
 				<55 512 120000 1200000>,
 				<55 512 393600 3936000>;
+		qcom,ce-opp-freq = <171430000>;
 	};
 
 	jtag_fuse: jtagfuse@fc4be024 {
@@ -4953,8 +4965,6 @@
 		qcom,cx-phase-resource-key = "tmpc";
 		qcom,cx-phase-hot-crit-temp = <85>;
 		qcom,cx-phase-hot-crit-temp-hyst = <15>;
-		qcom,gfx-phase-warm-temp = <60>;
-		qcom,gfx-phase-warm-temp-hyst = <10>;
 		qcom,gfx-phase-hot-crit-temp = <85>;
 		qcom,gfx-phase-hot-crit-temp-hyst = <15>;
 		qcom,gfx-sensor-id = <4>;
@@ -4996,6 +5006,7 @@
 		venus-core1-supply = <&gdsc_venus_core1>;
 		qcom,clock-names= "core_clk", "core0_clk", "core1_clk", "iface_clk", "bus_clk", "mem_clk";
 		qcom,clock-configs = <0x3 0x0 0x0 0x0 0x0 0x0>;
+		qcom,sw-power-collapse;
 		qcom,load-freq-tbl = <979200 465000000>,
 			<783360 465000000>,
 			<489600 266670000>,

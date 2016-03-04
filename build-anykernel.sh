@@ -82,7 +82,7 @@ echo "Render Kernel Creation Script:"
 echo -e "${restore}"
 
 echo "Pick Toolchain..."
-select choice in HYPER-arm-eabi-4.9 UBER-4.9-Cortex-a15 UBER-5.2
+select choice in HYPER-arm-eabi-4.9 UBER-4.9-Cortex-a15 UBER-5.3-cortex-a15
 do
 case "$choice" in
 	"HYPER-arm-eabi-4.9")
@@ -91,8 +91,8 @@ case "$choice" in
 	"UBER-4.9-Cortex-a15")
 		export CROSS_COMPILE=${HOME}/android/source/toolchains/UBER-arm-eabi-4.9-cortex-a15-08062015/bin/arm-eabi-
 		break;;
-	"UBER-5.2")
-		export CROSS_COMPILE=${HOME}/android/source/toolchains/UBER-arm-eabi-5.2-12042015/bin/arm-eabi-
+	"UBER-5.3-cortex-a15")
+		export CROSS_COMPILE=${HOME}/android/source/toolchains/UBER-arm-eabi-5.3-cortex-a15-030216/bin/arm-eabi-
 		break;;
 esac
 done
