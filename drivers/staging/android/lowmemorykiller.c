@@ -134,20 +134,23 @@ int adjust_minadj(short *min_score_adj)
 	return ret;
 }
 
-static unsigned long pressure = 0;
+static unsigned long lmk_vm_pressure = 0;
 
 static int lmk_vmpressure_notifier(struct notifier_block *nb,
 			unsigned long action, void *data)
 {
 	int other_free = 0, other_file = 0;
 	int array_size = ARRAY_SIZE(lowmem_adj);
-	pressure = action;
+	unsigned long pressure = action;
 
 	if (!enable_adaptive_lmk) {
 		if (lmk_vm_pressure > 0)
 			lmk_vm_pressure = 0;
 		return 0;
 	}
+	
+	/* update lmk_vm_pressure state */
+	lmk_vm_pressure = action;
 
 	if (pressure >= VM_PRESSURE_ADAPTIVE_STOP) {
 		other_file = global_page_state(NR_FILE_PAGES) -
@@ -213,6 +216,7 @@ static bool avoid_to_kill(uid_t uid)
 	return 0;
 }
 
+#if 0 /* We need to trigger OOM on protected_apps/system for now */
 static bool protected_apps(char *comm)
 {
 	if (strcmp(comm, "d.process.acore") == 0 ||
@@ -222,6 +226,7 @@ static bool protected_apps(char *comm)
 		return 1;
 	return 0;
 }
+#endif
 
 static int test_task_flag(struct task_struct *p, int flag)
 {
@@ -588,7 +593,10 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 		}
 		pcred = __task_cred(p);
 		uid = pcred->uid;
+#if 0 /* We need to trigger OOM on protected_apps for now */
 		if (avoid_to_kill(uid) || protected_apps(p->comm)){
+#else
+		if (avoid_to_kill(uid)) {
 			if (tasksize * (long)(PAGE_SIZE / 1024) >= 50000){
 				selected = p;
 				selected_tasksize = tasksize;
@@ -598,7 +606,9 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 			} else
 			lowmem_print(3, "skip protected %d (%s), adj %hd, size %d, to kill\n",
 			     	p->pid, p->comm, oom_score_adj, tasksize);
-		} else {
+		} else
+#endif
+		{
 			selected = p;
 			selected_tasksize = tasksize;
 			selected_oom_score_adj = oom_score_adj;
@@ -646,10 +656,10 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 			     global_page_state(NR_SLAB_UNRECLAIMABLE) *
 				(long)(PAGE_SIZE / 1024),
 			     sc->gfp_mask);
-		if (pressure >= vm_pressure_adaptive_start)
-			lowmem_print(1, "VM Pressure is %lu\n", pressure);
+		if (lmk_vm_pressure >= vm_pressure_adaptive_start)
+			lowmem_print(1, "VM Pressure is %lu\n", lmk_vm_pressure);
 		else
-			lowmem_print(2, "VM Pressure is %lu\n", pressure);
+			lowmem_print(2, "VM Pressure is %lu\n", lmk_vm_pressure);
 
 		if (lowmem_debug_level >= 2 && selected_oom_score_adj == 0) {
 			show_mem(SHOW_MEM_FILTER_NODES);
@@ -894,7 +904,7 @@ module_param_named(debug_level, lowmem_debug_level, uint, S_IRUGO | S_IWUSR);
 module_param_named(lmk_fast_run, lmk_fast_run, int, S_IRUGO | S_IWUSR);
 module_param_named(vm_pressure_adaptive_start, vm_pressure_adaptive_start, int,
 		   S_IRUGO | S_IWUSR);
-module_param_named(lmk_vm_pressure, pressure, ulong, 0444);
+module_param_named(lmk_vm_pressure, lmk_vm_pressure, ulong, 0444);
 
 module_init(lowmem_init);
 module_exit(lowmem_exit);
