@@ -395,8 +395,7 @@ static void lpm_system_prepare(struct lpm_system_state *system_state,
 	do_div(us, USEC_PER_SEC/SCLK_HZ);
 	sclk = (uint32_t)us;
 	msm_mpm_enter_sleep(sclk, from_idle, &nextcpu);
-	if (from_idle)
-		time = ktime_to_ns(ktime_get());
+	time = ktime_to_ns(ktime_get());
 skip_rpm:
 	system_state->last_entered_cluster_index = index;
 	spin_unlock(&system_state->sync_lock);
@@ -445,10 +444,8 @@ static void lpm_system_unprepare(struct lpm_system_state *system_state,
 	if (index < 0)
 		goto unlock_and_return;
 
-	if (from_idle) {
-		time = ktime_to_ns(ktime_get()) - time;
-		msm_pm_l2_add_stat(system_state->system_level[index].l2_mode, time);
-	}
+	time = ktime_to_ns(ktime_get()) - time;
+	msm_pm_l2_add_stat(system_state->system_level[index].l2_mode, time);
 
 	if (default_l2_mode != system_state->system_level[index].l2_mode)
 		lpm_set_l2_mode(system_state, default_l2_mode);
