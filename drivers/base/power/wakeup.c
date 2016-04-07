@@ -20,10 +20,6 @@
 
 static bool enable_si_ws = true;
 module_param(enable_si_ws, bool, 0644);
-static bool enable_msm_hsic_ws = true;
-module_param(enable_msm_hsic_ws, bool, 0644);
-static bool enable_wlan_rx_wake_ws = true;
-module_param(enable_wlan_rx_wake_ws, bool, 0644);
 static bool enable_wlan_ctrl_wake_ws = true;
 module_param(enable_wlan_ctrl_wake_ws, bool, 0644);
 static bool enable_wlan_wake_ws = true;
@@ -398,32 +394,22 @@ static void wakeup_source_activate(struct wakeup_source *ws)
 	unsigned int cec;
 
 	if (!enable_si_ws && !strcmp(ws->name, "sensor_ind")) {
-		pr_info("wakeup source %s activate skipped\n",ws->name);
+		pr_debug("wakeup source %s activate skipped\n",ws->name);
 		return;
 	}
 
-	if (!enable_msm_hsic_ws && !strcmp(ws->name, "msm_hsic_host")) {
-		pr_info("wakeup source %s activate skipped\n",ws->name);
-                return;
-        }
-
-	if (!enable_wlan_rx_wake_ws && !strcmp(ws->name, "wlan_rx_wake")) {
-		pr_info("wakeup source %s activate skipped\n",ws->name);
-                return;
-	}
-
 	if (!enable_wlan_ctrl_wake_ws && !strcmp(ws->name, "wlan_ctrl_wake")) {
-		pr_info("wakeup source %s activate skipped\n",ws->name);
+		pr_debug("wakeup source %s activate skipped\n",ws->name);
                 return;
 	}
 
 	if (!enable_wlan_wake_ws && !strcmp(ws->name, "wlan_wake")) {
-		pr_info("wakeup source %s activate skipped\n",ws->name);
+		pr_debug("wakeup source %s activate skipped\n",ws->name);
                 return;
 	}
 
 	if (!enable_bluesleep_ws && !strcmp(ws->name, "bluesleep")) {
-		pr_info("wakeup source %s activate skipped\n",ws->name);
+		pr_debug("wakeup source %s activate skipped\n",ws->name);
 		return;
 	}
 
