@@ -5,7 +5,8 @@
 #### Render Kernel for the N6 ####
 #
 #### Hotplugs ####
-CONFIG_MSM_SLEEPER=y
+CONFIG_STATE_HELPER=y
+# CONFIG_MSM_SLEEPER is not set
 # CONFIG_MSM_HOTPLUG is not set
 # CONFIG_INTELLI_HOTPLUG is not set
 # CONFIG_BRICKED_HOTPLUG is not set
