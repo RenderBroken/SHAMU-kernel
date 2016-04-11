@@ -22,11 +22,12 @@
 /* Try not to change below values. */
 #define MSM_LIMITER			"msm_limiter"
 #define MSM_LIMITER_MAJOR		5
-#define MSM_LIMITER_MINOR		1
+#define MSM_LIMITER_MINOR		2
 
 /* Recommended to set below values from userspace. */
 #define FREQ_CONTROL			0
 #define DEBUG_MODE			0
+#define MPD_ENABLED			0
 
 /*
  * Define SOC freq limits below.
@@ -58,6 +59,8 @@
 
 static struct notifier_block notif;
 static unsigned int freq_control = FREQ_CONTROL;
+static unsigned int debug_mask = DEBUG_MODE;
+unsigned int mpd_enabled = MPD_ENABLED;
 
 struct cpu_limit {
 	unsigned int suspend_max_freq;
@@ -67,7 +70,6 @@ struct cpu_limit {
 };
 
 static DEFINE_PER_CPU(struct cpu_limit, limit);
-static unsigned int debug_mask = DEBUG_MODE;
 
 #define dprintk(msg...)		\
 do { 				\
