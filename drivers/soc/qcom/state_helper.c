@@ -29,7 +29,7 @@
 #define DEFAULT_MAX_CPUS_CRITICAL	1
 #define DEFAULT_BATT_ECONOMIC		25
 #define DEFAULT_BATT_CRITICAL		15
-#define DEBUG_MASK			1
+#define DEBUG_MASK			0
 
 static struct state_helper {
 	unsigned int enabled;
