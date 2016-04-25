@@ -6,6 +6,7 @@
 
 #### MISC ####
 CONFIG_MSM_CPU_VOLTAGE_CONTROL=y
+CONFIG_FORCE_FAST_CHARGE=y
 
 #### MultiRom Support ####
 CONFIG_KEXEC=y
