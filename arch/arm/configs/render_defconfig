@@ -4,6 +4,9 @@
 #
 #### Render Kernel for the N6 ####
 
+#### MISC ####
+CONFIG_MSM_CPU_VOLTAGE_CONTROL=y
+
 CONFIG_ARM=y
 CONFIG_ARM_HAS_SG_CHAIN=y
 CONFIG_MIGHT_HAVE_PCI=y
