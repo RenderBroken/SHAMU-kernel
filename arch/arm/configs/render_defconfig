@@ -4,10 +4,17 @@
 #
 #### Render Kernel for the N6 ####
 
+#### Hotplugs ####
+CONFIG_STATE_HELPER=y
+
+#### CPUFREQ ####
+CONFIG_MSM_LIMITER=y
+
 #### MISC ####
 CONFIG_MSM_CPU_VOLTAGE_CONTROL=y
 CONFIG_FORCE_FAST_CHARGE=y
 CONFIG_SIMPLE_GPU_ALGORITHM=y
+CONFIG_STATE_NOTIFIER=y
 
 #### MultiRom Support ####
 CONFIG_KEXEC=y
