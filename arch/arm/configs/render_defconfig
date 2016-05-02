@@ -3272,7 +3272,6 @@ CONFIG_STAGING=y
 # CONFIG_LINE6_USB is not set
 # CONFIG_USB_SERIAL_QUATECH2 is not set
 # CONFIG_DX_SEP is not set
-# CONFIG_ZSMALLOC is not set
 # CONFIG_FB_SM7XX is not set
 # CONFIG_CRYSTALHD is not set
 # CONFIG_FB_XGI is not set
