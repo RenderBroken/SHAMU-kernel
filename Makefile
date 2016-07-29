@@ -326,7 +326,7 @@ include $(srctree)/scripts/Kbuild.include
 # Make variables (CC, etc...)
 
 AS		= $(CROSS_COMPILE)as
-LD		= $(CROSS_COMPILE)ld.gold
+LD		= $(CROSS_COMPILE)ld
 CC		= $(CCACHE) $(CROSS_COMPILE)gcc
 CPP		= $(CC) -E
 AR		= $(CROSS_COMPILE)ar
@@ -351,8 +351,8 @@ MODFLAGS	= -marm -mtune=cortex-a15 -mcpu=cortex-a15 -mfpu=neon-vfpv4 \
 		  -frename-registers -ftree-loop-linear -ftree-vectorize \
 		  -fmodulo-sched -ffast-math -funsafe-math-optimizations \
 		  -std=gnu89 --param l1-cache-size=16 \
-		  --param l1-cache-line-size=16 --param l2-cache-size=2048 \
-		  -fopenmp -fsanitize=leak
+		  --param l1-cache-line-size=16 --param l2-cache-size=2048
+
 CFLAGS_MODULE   = -DMODULE $(MODFLAGS)
 AFLAGS_MODULE   = -DMODULE $(MODFLAGS)
 LDFLAGS_MODULE  =
